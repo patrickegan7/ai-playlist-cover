@@ -1,5 +1,21 @@
-.env
-
+# Node modules
 node_modules/
 
+# Output and generated files
+output/
+*.json
+!package.json
+!package-lock.json
+
+# OS and editor files
+.DS_Store
+.vscode/
+
+# Environment variables
+.env
+
+# Spotify token
 .spotify-token.json
+
+# Playlist config
+playlists.json

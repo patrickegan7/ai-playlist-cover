@@ -1,0 +1,18 @@
+{
+  "name": "spotify-ai-cover-art",
+  "version": "1.0.0",
+  "description": "Use AI to generate playlist cover art",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@huggingface/inference": "^3.15.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  }
+}
