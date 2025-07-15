@@ -1,7 +1,5 @@
-// const { InferenceClient } = require("@huggingface/inference");
 const OpenAI = require('openai');
 
-// const client = new InferenceClient(process.env.HUGGINGFACE_API_KEY);
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
