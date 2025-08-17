@@ -1,9 +1,9 @@
 require("dotenv").config();
-const fetchAuthToken = require('./fetchAuthToken');
-const spotifyRequest = require('./spotifyApi');
+const fetchAuthToken = require('../fetchAuthToken');
+const spotifyRequest = require('../spotifyApi');
 const fs = require('fs');
 const path = require('path');
-const generatePlaylistCover = require('./generatePlaylistCover');
+const generatePlaylistCover = require('../generatePlaylistCover');
 const OpenAI = require('openai');
 const inquirer = require('inquirer');
 
