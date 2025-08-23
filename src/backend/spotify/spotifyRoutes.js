@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const { login, callback } = require('./spotifyController');
 
-const spotifyAuthController = require('./spotifyAuthController');
-const spotifyTokenController = require('./spotifyTokenController');
-
-router.get('/login', spotifyAuthController);
-router.get('/callback', spotifyTokenController);
+router.get('/login', login);
+router.get('/callback', callback);
 
 module.exports = router;
