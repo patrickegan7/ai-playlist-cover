@@ -1,12 +1,12 @@
 const express = require('express');
 const path = require('path');
-const spotifyRouter = require('./spotify/spotifyRoutes');
+const spotifyAuthRouter = require('./spotify/spotifyAuthRoutes');
 
 function main() {
     const app = startServer();
     
     app.use(express.static(path.join(__dirname, '../frontend')));
-    app.use('/spotify', spotifyRouter);
+    app.use('/spotify/auth', spotifyAuthRouter);
 }
 
 function startServer() {
