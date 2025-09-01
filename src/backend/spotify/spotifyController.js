@@ -36,7 +36,20 @@ async function callback(req, res) {
             })
         });
 
-        // Store tokens in session
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Store token data in session
+        req.session.spotifyTokens = {
+            accessToken: data.access_token,
+            refreshToken: data.refresh_token,
+            expiresIn: data.expires_in,
+            tokenType: data.token_type
+        };
+
         res.send('Authentication successful! You can close this window.');
     } catch (error) {
         console.error('Error exchanging code for tokens:', error.response?.data || error.message);
