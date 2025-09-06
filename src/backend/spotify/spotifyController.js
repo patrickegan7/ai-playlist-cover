@@ -50,7 +50,7 @@ async function callback(req, res) {
             tokenType: data.token_type
         };
 
-        res.send('Authentication successful! You can close this window.');
+        res.redirect('/playlists');
     } catch (error) {
         console.error('Error exchanging code for tokens:', error.response?.data || error.message);
         res.redirect(`${process.env.FRONTEND_URL}/error?message=Failed to authenticate with Spotify`);

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select a Playlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .playlists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .playlist-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .playlist-item img {
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .generate-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #1DB954;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            margin-top: 10px;
+        }
+        .generate-button:hover {
+            background-color: #1ed760;
+        }
+    </style>
+</head>
+<body>
+    <h1>Select a Playlist</h1>
+    <div class="playlists-grid">
+        <!-- Playlist items will be injected here -->
+    </div>
+</body>
+</html>
