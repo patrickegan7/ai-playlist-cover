@@ -48,5 +48,29 @@
     <div class="playlists-grid">
         <!-- Playlist items will be injected here -->
     </div>
+    <script>
+        async function generateCover(playlistId) {
+            try {
+                const response = await fetch(`/playlists/${playlistId}/cover`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to generate cover');
+                }
+                
+                const result = await response.json();
+                // Handle the response as needed
+                console.log('Cover generated:', result);
+                alert(`Started generating cover for playlist: ${result.playlistName}`);
+            } catch (error) {
+                console.error('Error generating cover:', error);
+                alert('Failed to generate cover. Please try again.');
+            }
+        }
+    </script>
 </body>
 </html>
