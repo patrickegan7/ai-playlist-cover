@@ -111,6 +111,11 @@
                     <label for="styleInput">Describe the style and details for your playlist cover:</label>
                     <textarea id="styleInput" placeholder="Example: A minimalist design with pastel colors, featuring abstract musical notes. The mood should be calm and peaceful." required></textarea>
                 </div>
+                <div id="generatedImageContainer" style="display: none; margin-top: 20px; text-align: center;">
+                    <img id="generatedImage" style="max-width: 100%; border-radius: 8px; margin-bottom: 10px;">
+                    <br>
+                    <a id="downloadButton" class="generate-button" style="display: inline-block;" download>Download Cover</a>
+                </div>
                 <button type="submit" class="submit-style">Generate Cover</button>
             </form>
         </div>
@@ -124,10 +129,18 @@
         let currentPlaylistId = null;
 
         // Close modal when clicking the X button or outside the modal
-        closeButton.onclick = () => modal.style.display = 'none';
+        function closeModal() {
+            modal.style.display = 'none';
+            document.getElementById('styleInput').value = ''; // Clear the input
+            document.getElementById('generatedImageContainer').style.display = 'none'; // Hide the image container
+            const submitButton = styleForm.querySelector('.submit-style');
+            submitButton.textContent = 'Generate Cover';
+        }
+
+        closeButton.onclick = closeModal;
         window.onclick = (event) => {
             if (event.target === modal) {
-                modal.style.display = 'none';
+                closeModal();
             }
         }
 
@@ -141,13 +154,18 @@
         styleForm.onsubmit = async (e) => {
             e.preventDefault();
             const styleInput = document.getElementById('styleInput').value;
+            const submitButton = e.target.querySelector('.submit-style');
             
             try {
+                submitButton.disabled = true;
+                submitButton.textContent = 'Generating...';
                 await generateCover(currentPlaylistId, styleInput);
-                modal.style.display = 'none';
-                document.getElementById('styleInput').value = ''; // Clear the input
+                submitButton.textContent = 'Generate Another';
+                submitButton.disabled = false;
             } catch (error) {
                 console.error('Error:', error);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Generate Cover';
             }
         };
 
@@ -169,6 +187,15 @@
                 
                 const result = await response.json();
                 console.log('Cover generated:', result);
+                
+                // Display the generated image
+                const imageContainer = document.getElementById('generatedImageContainer');
+                const generatedImage = document.getElementById('generatedImage');
+                const downloadButton = document.getElementById('downloadButton');
+                
+                generatedImage.src = result.imageUrl;
+                downloadButton.href = result.imageUrl;
+                imageContainer.style.display = 'block';
             } catch (error) {
                 console.error('Error generating cover:', error);
                 alert('Failed to generate cover. Please try again.');

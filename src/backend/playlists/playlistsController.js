@@ -73,12 +73,13 @@ async function getPlaylistDataAndGenerateCover(req, res) {
 
         const playlist = await response.json();
         
-        const image = await generatePlaylistImage(playlist, userDescription);
+        const imageUrl = await generatePlaylistImage(playlist, userDescription);
         
         res.json({ 
-            message: 'Cover generation started',
+            message: 'Cover generated successfully',
             playlistId,
-            playlistName: playlist.name
+            playlistName: playlist.name,
+            imageUrl
         });
     } catch (error) {
         console.error('Error generating cover:', error);
