@@ -7,6 +7,7 @@ const playlistRouter = require('./playlists/playlistRoutes');
 function main() {
     const app = startServer();
     
+    app.use(express.json());  // Add JSON body parser
     app.use(express.static(path.join(__dirname, '../frontend')));
     app.use('/spotify/auth', spotifyAuthRouter);
     app.use('/playlists', playlistRouter);

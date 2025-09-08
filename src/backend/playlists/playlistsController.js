@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs').promises;
+const generatePlaylistImage = require('./ai/generatePlaylistImage');
 
 async function getPlaylists(req, res) {
     // Check if user is authenticated
@@ -27,7 +28,7 @@ async function getPlaylists(req, res) {
                 <img src="${playlist.images[0]?.url || ''}" alt="${playlist.name}" style="width: 100px; height: 100px;">
                 <h3>${playlist.name}</h3>
                 <p>${playlist.tracks.total} tracks</p>
-                <button onclick="generateCover('${playlist.id}')" class="generate-button">Generate Cover</button>
+                <button onclick="openStyleModal('${playlist.id}')" class="generate-button">Generate Cover</button>
             </div>
         `).join('');
 
@@ -53,6 +54,11 @@ async function getPlaylistDataAndGenerateCover(req, res) {
 
     try {
         const playlistId = req.params.playlistId;
+        const { userDescription } = req.body;
+
+        if (!userDescription) {
+            return res.status(400).json({ error: 'User description is required' });
+        }
         
         // Get playlist data from Spotify API
         const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
@@ -67,7 +73,7 @@ async function getPlaylistDataAndGenerateCover(req, res) {
 
         const playlist = await response.json();
         
-        // TODO: Implement cover generation logic
+        const image = await generatePlaylistImage(playlist, userDescription);
         
         res.json({ 
             message: 'Cover generation started',

@@ -37,8 +37,60 @@
             text-decoration: none;
             border-radius: 20px;
             margin-top: 10px;
+            cursor: pointer;
+            border: none;
         }
         .generate-button:hover {
+            background-color: #1ed760;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            position: relative;
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 8px;
+        }
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .style-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .style-form textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        .submit-style {
+            background-color: #1DB954;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .submit-style:hover {
             background-color: #1ed760;
         }
     </style>
@@ -48,14 +100,67 @@
     <div class="playlists-grid">
         <!-- Playlist items will be injected here -->
     </div>
+
+    <!-- Style Input Modal -->
+    <div id="styleModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Customize Your Playlist Cover</h2>
+            <form id="styleForm" class="style-form">
+                <div>
+                    <label for="styleInput">Describe the style and details for your playlist cover:</label>
+                    <textarea id="styleInput" placeholder="Example: A minimalist design with pastel colors, featuring abstract musical notes. The mood should be calm and peaceful." required></textarea>
+                </div>
+                <button type="submit" class="submit-style">Generate Cover</button>
+            </form>
+        </div>
+    </div>
+
     <script>
-        async function generateCover(playlistId) {
+        // Modal elements
+        const modal = document.getElementById('styleModal');
+        const closeButton = document.querySelector('.close-modal');
+        const styleForm = document.getElementById('styleForm');
+        let currentPlaylistId = null;
+
+        // Close modal when clicking the X button or outside the modal
+        closeButton.onclick = () => modal.style.display = 'none';
+        window.onclick = (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Handle initial generate cover button click
+        function openStyleModal(playlistId) {
+            currentPlaylistId = playlistId;
+            modal.style.display = 'block';
+        }
+
+        // Handle form submission
+        styleForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const styleInput = document.getElementById('styleInput').value;
+            
+            try {
+                await generateCover(currentPlaylistId, styleInput);
+                modal.style.display = 'none';
+                document.getElementById('styleInput').value = ''; // Clear the input
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        async function generateCover(playlistId, userDescription) {
             try {
                 const response = await fetch(`/playlists/${playlistId}/cover`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({
+                        userDescription: userDescription
+                    })
                 });
                 
                 if (!response.ok) {
@@ -63,9 +168,7 @@
                 }
                 
                 const result = await response.json();
-                // Handle the response as needed
                 console.log('Cover generated:', result);
-                alert(`Started generating cover for playlist: ${result.playlistName}`);
             } catch (error) {
                 console.error('Error generating cover:', error);
                 alert('Failed to generate cover. Please try again.');
