@@ -1,9 +1,10 @@
 const OpenAI = require('openai');
+const createImagePrompt = require('./createImagePrompt');
 
 const openai = new OpenAI();
 
 async function generatePlaylistImage(playlist, userDescription) {
-    const prompt = createImagePrompt(playlist, userDescription);
+    const prompt = await createImagePrompt(playlist, userDescription);
 
     try {
         const response = await openai.images.generate({
