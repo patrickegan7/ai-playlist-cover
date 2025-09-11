@@ -9,7 +9,7 @@ function login(req, res) {
         response_type: 'code',
         client_id: process.env.SPOTIFY_CLIENT_ID,
         scope: scope,
-        redirect_uri: 'http://127.0.0.1:3000/spotify/auth/callback',
+        redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
         state: state
     });
 
@@ -31,7 +31,7 @@ async function callback(req, res) {
             },
             body: new URLSearchParams({
                 code: code,
-                redirect_uri: 'http://127.0.0.1:3000/spotify/auth/callback',
+                redirect_uri: process.env.SPOTIFY_REDIRECT_URI,
                 grant_type: 'authorization_code'
             })
         });
