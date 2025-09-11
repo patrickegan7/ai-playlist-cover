@@ -2,7 +2,9 @@ const OpenAI = require('openai');
 const fs = require('fs');
 const path = require('path');
 
-const openai = new OpenAI();
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 // Cache the prompt template
 let cachedPromptTemplate;
