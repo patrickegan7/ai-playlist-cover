@@ -5,7 +5,7 @@ const generatePlaylistImage = require('./ai/generatePlaylistImage');
 async function getPlaylists(req, res) {
     // Check if user is authenticated
     if (!req.session.spotifyTokens) {
-        return res.redirect('/spotify/auth/login');
+        throw new Error('Not authenticated');
     }
 
     try {
