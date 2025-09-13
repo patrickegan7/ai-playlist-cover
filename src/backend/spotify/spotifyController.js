@@ -5,6 +5,9 @@ function login(req, res) {
     const scope = 'playlist-read-private playlist-read-collaborative';
     const state = crypto.randomBytes(8).toString('hex').slice(0, 16);
 
+    // Store state in session for CSRF validation
+    req.session.spotifyState = state;
+
     const params = new URLSearchParams({
         response_type: 'code',
         client_id: process.env.SPOTIFY_CLIENT_ID,
@@ -19,7 +22,19 @@ function login(req, res) {
 
 async function callback(req, res) {
     const code = req.query.code;
-    
+    const state = req.query.state;
+    const storedState = req.session.spotifyState;
+
+    if (!state || state !== storedState) {
+        console.error('Spotify state mismatch or missing');
+        return res.redirect(`${process.env.FRONTEND_URL}/error?message=State mismatch`);
+    }
+
+    if (!code) {
+        console.error('No authorization code returned from Spotify');
+        return res.redirect(`${process.env.FRONTEND_URL}/error?message=No code from Spotify`);
+    }
+
     try {
         const response = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
@@ -37,11 +52,13 @@ async function callback(req, res) {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const text = await response.text();
+            console.error('Spotify token exchange failed:', response.status, text);
+            return res.redirect(`${process.env.FRONTEND_URL}/error?message=Failed to exchange code`);
         }
 
         const data = await response.json();
-        
+
         // Store token data in session
         req.session.spotifyTokens = {
             accessToken: data.access_token,
@@ -51,9 +68,10 @@ async function callback(req, res) {
         };
 
         res.redirect('/playlists');
-    } catch (error) {
-        console.error('Error exchanging code for tokens:', error.response?.data || error.message);
-        res.redirect(`${process.env.FRONTEND_URL}/error?message=Failed to authenticate with Spotify`);
+
+    } catch (err) {
+        console.error('Unexpected error exchanging code for tokens:', err);
+        res.redirect(`${process.env.FRONTEND_URL}/error?message=Unexpected error`);
     }
 }
 
