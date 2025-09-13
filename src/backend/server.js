@@ -23,7 +23,8 @@ function startServer() {
         saveUninitialized: false,
         cookie: {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production'
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
         }
     }));
 
