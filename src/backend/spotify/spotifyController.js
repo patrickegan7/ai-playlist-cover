@@ -5,9 +5,6 @@ function login(req, res) {
     const scope = 'playlist-read-private playlist-read-collaborative';
     const state = crypto.randomBytes(8).toString('hex').slice(0, 16);
 
-    // Store state in session for CSRF validation
-    req.session.spotifyState = state;
-
     const params = new URLSearchParams({
         response_type: 'code',
         client_id: process.env.SPOTIFY_CLIENT_ID,
@@ -22,13 +19,6 @@ function login(req, res) {
 
 async function callback(req, res) {
     const code = req.query.code;
-    const state = req.query.state;
-    const storedState = req.session.spotifyState;
-
-    if (!state || state !== storedState) {
-        console.error('Spotify state mismatch or missing');
-        return res.redirect(`${process.env.FRONTEND_URL}/error?message=State mismatch`);
-    }
 
     if (!code) {
         console.error('No authorization code returned from Spotify');
